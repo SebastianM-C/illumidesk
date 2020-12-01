@@ -1,0 +1,47 @@
+[frontends.frontend__2F]
+backend = "backend__2F"
+passHostHeader = true
+
+[frontends.frontend__2Fservices_2Fannouncement]
+backend = "backend__2Fservices_2Fannouncement"
+passHostHeader = true
+
+[frontends.frontend__2Fservices_2Ftest]
+backend = "backend__2Fservices_2Ftest"
+passHostHeader = true
+
+[frontends.frontend__2Fuser_2Fqwe]
+backend = "backend__2Fuser_2Fqwe"
+passHostHeader = true
+
+[frontends.frontend__2F.routes.test]
+rule = "PathPrefix:/"
+data = "{\"hub\": true}"
+
+[frontends.frontend__2Fservices_2Fannouncement.routes.test]
+rule = "PathPrefix:/services/announcement"
+data = "{\"service\": \"announcement\"}"
+
+[frontends.frontend__2Fservices_2Ftest.routes.test]
+rule = "PathPrefix:/services/test"
+data = "{\"service\": \"test\"}"
+
+[frontends.frontend__2Fuser_2Fqwe.routes.test]
+rule = "PathPrefix:/user/qwe"
+data = "{\"user\": \"qwe\", \"server_name\": \"\"}"
+
+[backends.backend__2F.servers.server1]
+url = "http://jupyterhub:8081"
+weight = 1
+
+[backends.backend__2Fservices_2Fannouncement.servers.server1]
+url = "http://7b94493879ec:8889"
+weight = 1
+
+[backends.backend__2Fservices_2Ftest.servers.server1]
+url = "http://grader-test:8888"
+weight = 1
+
+[backends.backend__2Fuser_2Fqwe.servers.server1]
+url = "http://172.18.0.8:8888"
+weight = 1
