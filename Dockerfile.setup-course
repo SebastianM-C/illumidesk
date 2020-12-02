@@ -4,6 +4,10 @@ SHELL [ "/bin/bash", "-c" ]
 
 WORKDIR /tmp
 
+# Proxy settings
+ENV HTTP_PROXY=http://192.168.1.1:8123
+ENV HTTPS_PROXY=${HTTP_PROXY}
+
 # Install illumidesk package
 # COPY illumidesk.zip /tmp/illumidesk.zip
 # RUN python3 -m pip install --no-cache /tmp/illumidesk.zip \
