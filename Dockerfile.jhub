@@ -1,6 +1,14 @@
 ARG BASE_IMAGE=illumidesk/jupyterhub:py3.8
 FROM ${BASE_IMAGE}
 
+# Enable proxy for setup
+ARG PROXY_URL=http://192.168.1.1:8123
+ENV HTTP_PROXY=${PROXY_URL}
+ENV HTTPS_PROXY=${HTTP_PROXY}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTP_PROXY}
+ENV ftp_proxy=${HTTP_PROXY}
+
 # add additional packages for postgres
 RUN apt-get update \
  && apt-get install -yq --no-install-recommends \
@@ -15,6 +23,9 @@ RUN apt-get update \
     wget \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
+
+# Set up git proxy
+RUN git config --global url.https://github.com/.insteadOf git://github.com/
 
 # always make sure pip is up to date!
 RUN python3 -m pip install --no-cache --upgrade setuptools pip
@@ -59,6 +70,13 @@ RUN wget https://raw.githubusercontent.com/jupyterhub/jupyterhub/d126baa443ad7d8
 # Copy postgres util script and update permissions
 COPY wait-for-postgres.sh /srv/jupyterhub/wait-for-postgres.sh
 RUN chmod +x /srv/jupyterhub/wait-for-postgres.sh
+
+# Disable proxy as not to interfere with the jupyterhub one
+ENV HTTP_PROXY=
+ENV HTTPS_PROXY=${HTTP_PROXY}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTP_PROXY}
+ENV ftp_proxy=${HTTP_PROXY}
 
 # Run standard command but wait for postgres
 # https://docs.docker.com/compose/startup-order/
