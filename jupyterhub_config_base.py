@@ -36,6 +36,11 @@ c.JupyterHub.redirect_to_server = False
 # Set to debug for teting
 c.JupyterHub.log_level = 'DEBUG'
 
+c.JupyterHub.debug_proxy = True
+
+# Purge and reset the database.
+c.JupyterHub.reset_db = True
+
 # Allows multiple single-server per user
 c.JupyterHub.allow_named_servers = False
 
@@ -178,6 +183,8 @@ c.DockerSpawner.cpu_limit = float(cpu_limit)
 ##########################################
 # BEGIN CUSTOM DOCKERSPAWNER
 ##########################################
+
+c.DockerSpawner.debug = True
 
 # Allow container to use any ip address
 c.DockerSpawner.host_ip = '0.0.0.0'

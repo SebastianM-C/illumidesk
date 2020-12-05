@@ -2,6 +2,8 @@ import logging
 import hashlib
 import os
 import re
+import sys
+import logging
 
 from jupyterhub.handlers import BaseHandler
 
@@ -24,7 +26,7 @@ import uuid
 from illumidesk.authenticators.validator import LTI13LaunchValidator
 from illumidesk.authenticators.utils import LTIUtils
 
-
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -38,6 +40,7 @@ class LTI11AuthenticateHandler(BaseHandler):
 
     async def post(self):
         user = await self.login_user()  # noqa: F841
+        logger.debug('LTI11 Auth complete. Redirecting')
         self.redirect(self.get_body_argument('custom_next', self.get_next_url()))
 
 

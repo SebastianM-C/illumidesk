@@ -94,6 +94,7 @@ async def setup_course_hook(
         logger.debug('The current jupyterhub instance will be updated by setup-course service...')
         make_rolling_update()
 
+    logging.debug('Going to auth')
     return authentication
 
 

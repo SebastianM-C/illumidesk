@@ -1,10 +1,13 @@
 import os
 import shutil
+import sys
+import logging
 
 from jupyterhub.spawner import Spawner
 
 from illumidesk.authenticators.utils import user_is_an_instructor
-
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def custom_auth_state_hook(spawner: Spawner, auth_state: dict) -> None:
     """
@@ -50,6 +53,7 @@ def custom_pre_spawn_hook(spawner: Spawner) -> None:
         raise ValueError('Spawner object does not contain the username')
     username = spawner.user.name
     user_path = os.path.join('/home', username)
+    logging.debug('In pre_spawn_hook')
     if not os.path.exists(user_path):
         spawner.log.debug(f'Creating workdir {user_path} for the user {username}')
         os.mkdir(user_path)
