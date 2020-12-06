@@ -24,12 +24,12 @@ class SendGradesHandler(BaseHandler):
         Receives a request with the course name and the assignment name as path parameters
         which then uses the appropriate class to send grades to the platform based on the
         LTI authenticator version (1.1 or 1.3).
-        
+
         Arguments:
           course_id: course name which has been previously normalized by the LTIUtils.normalize_string
             function.
           assignment_name: assignment name which should coincide with the assignment name within the LMS.
-          
+
         Raises:
           GradesSenderCriticalError if there was a critical error when either extracting grades from the db
             or sending grades to the tool consumer / platform.
@@ -37,11 +37,12 @@ class SendGradesHandler(BaseHandler):
           GradesSenderMissingInfoError if ther is missing information when attempting to send grades.
         """
         self.log.debug(f'Data received to send grades-> course:{course_id}, assignment:{assignment_name}')
+        self.log.debug(f'Auth class: {self.authenticator_class}')
 
         lti_grade_sender = None
 
         # check lti version by the authenticator setting
-        if self.authenticator_class == LTI11Authenticator:
+        if self.authenticator_class == LTI11Authenticator or self.authenticator_class is None:
             lti_grade_sender = LTIGradeSender(course_id, assignment_name)
         else:
             auth_state = await self.current_user.get_auth_state()
