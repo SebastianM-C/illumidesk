@@ -1,0 +1,3 @@
+FROM illumidesk/grader-notebook:latest
+
+COPY execute_patched.py /opt/conda/lib/python3.8/site-packages/nbgrader/preprocessors/execute.py
