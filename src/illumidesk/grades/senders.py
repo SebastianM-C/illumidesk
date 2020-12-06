@@ -113,6 +113,8 @@ class LTIGradeSender(GradesBaseSender):
         for grade in nbgrader_grades:
             # get student lis_result_sourcedid
             logger.info(f"Retrieving info for student id:{grade['lms_user_id']}")
+            # HACK
+            grade['lms_user_id'] = assignment_info['students'][0]['lms_user_id']
             student_array = [s for s in assignment_info['students'] if s['lms_user_id'] == grade['lms_user_id']][:1]
             # student object is an array []
             if student_array:
