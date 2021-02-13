@@ -51,7 +51,7 @@ class GradesBaseSender:
 
     @property
     def gradebook_dir(self):
-        return f'/home/{self.course_id}/'
+        return f'/home/{self.grader_name}/{self.course_id}'
 
     def _retrieve_grades_from_db(self):
         db_url = Path(self.gradebook_dir, 'gradebook.db')
