@@ -4,6 +4,9 @@ services:
   jupyterhub:
     restart: on-failure
     image: sebastianmc/jupyterhub:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile.jhub
     depends_on:
       - reverse-proxy
       - jupyterhub-db
@@ -45,6 +48,9 @@ services:
   setup-course:
     restart: on-failure
     image: sebastianmc/setup-course:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile.setup-course
     container_name: setup-course
     command: hypercorn --bind 0.0.0.0:8000 --workers 1 illumidesk.setup_course.app:app
     env_file:
