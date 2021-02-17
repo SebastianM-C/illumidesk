@@ -1,0 +1,82 @@
+version: "3.5"
+
+services:
+  jupyterhub:
+    restart: on-failure
+    image: sebastianmc/jupyterhub:latest
+    depends_on:
+      - reverse-proxy
+      - jupyterhub-db
+      - setup-course
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./mnt/my-org/home:/home
+      - data:/data
+      - ./reverse-proxy:/etc/traefik
+      - ./keys:/secrets/keys
+    env_file:
+      - env.jhub
+    command: >
+      jupyterhub -f /etc/jupyterhub/jupyterhub_config.py --debug
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jhub_router.service=jupyterhub"
+  jupyterhub-db:
+    image: postgres:11.6-alpine
+    container_name: jupyterhub-db
+    restart: always
+    env_file:
+      - env.jhub
+    volumes:
+      - db:/var/lib/postgresql/data
+  reverse-proxy:
+    image: traefik:v1.7-alpine
+    container_name: reverse-proxy
+    ports:
+      - "8000:8000"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./reverse-proxy/:/etc/traefik/
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: on-failure
+  setup-course:
+    restart: on-failure
+    image: sebastianmc/setup-course:latest
+    container_name: setup-course
+    command: hypercorn --bind 0.0.0.0:8000 --workers 1 illumidesk.setup_course.app:app
+    env_file:
+      - env.setup_course
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./mnt:/mnt
+      - data:/srv/jupyterhub
+      - .:/deploy
+#{% if postgres_labs_enabled is sameas true %}
+  postgres-labs:
+    image: postgres:11.6-alpine
+    container_name: postgres-labs
+    restart: always
+    environment:
+      - POSTGRES_DB=labs
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-labs:/var/lib/postgresql/data
+#{% endif %}
+
+volumes:
+  data:
+    external:
+      name: jupyterhub-data
+  db:
+    external:
+      name: db-data
+  db-labs:
+    external:
+      name: db-labs-data
+
+networks:
+  default:
+    external:
+      name: jupyter-network
