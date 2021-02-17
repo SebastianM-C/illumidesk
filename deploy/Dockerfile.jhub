@@ -1,6 +1,16 @@
 ARG BASE_IMAGE=illumidesk/jupyterhub:py3.8
 FROM ${BASE_IMAGE}
 
+# Enable proxy for setup
+ARG PROXY_URL=http://192.168.1.1:8123
+ENV HTTP_PROXY=${PROXY_URL}
+ENV HTTPS_PROXY=${HTTP_PROXY}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTP_PROXY}
+ENV ftp_proxy=${HTTP_PROXY}
+ENV no_proxy="localhost,jupyterhub,jupyterhub-db,reverse-proxy,setup-course,postgres-labs"
+ENV NO_PROXY=${no_proxy}
+
 # add additional packages for postgres
 RUN apt-get update \
  && apt-get install -yq --no-install-recommends \
@@ -16,6 +26,9 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
+# Set up git proxy
+RUN git config --global url.https://github.com/.insteadOf git://github.com/
+
 # always make sure pip is up to date!
 RUN python3 -m pip install --no-cache --upgrade setuptools pip
 
@@ -30,8 +43,11 @@ COPY jupyterhub-requirements.txt /tmp/jupyterhub/requirements.txt
 RUN python3 -m pip install --no-cache -r /tmp/jupyterhub/requirements.txt
 
 # Install illumidesk package
-COPY illumidesk.zip /tmp/illumidesk.zip
-RUN python3 -m pip install --no-cache /tmp/illumidesk.zip
+# COPY illumidesk.zip /tmp/illumidesk.zip
+# RUN python3 -m pip install --no-cache /tmp/illumidesk.zip \
+#  && rm /tmp/illumidesk.zip
+COPY src src
+RUN pip install -e src/
 
 # Copy logo and favicon
 COPY illumidesk-80.png /usr/local/share/jupyterhub/static/images/illumidesk-80.png

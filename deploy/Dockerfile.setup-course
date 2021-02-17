@@ -4,6 +4,16 @@ SHELL [ "/bin/bash", "-c" ]
 
 WORKDIR /tmp
 
+# Proxy settings
+ARG PROXY_URL=http://192.168.1.1:8123
+ENV HTTP_PROXY=${PROXY_URL}
+ENV HTTPS_PROXY=${HTTP_PROXY}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTP_PROXY}
+ENV ftp_proxy=${HTTP_PROXY}
+ENV no_proxy="localhost,jupyterhub,jupyterhub-db,reverse-proxy,setup-course,postgres-labs"
+ENV NO_PROXY=${no_proxy}
+
 # Install illumidesk package
 # COPY illumidesk.zip /tmp/illumidesk.zip
 # RUN python3 -m pip install --no-cache /tmp/illumidesk.zip \
