@@ -8,7 +8,7 @@ WORKDIR /tmp
 # COPY illumidesk.zip /tmp/illumidesk.zip
 # RUN python3 -m pip install --no-cache /tmp/illumidesk.zip \
 #  && rm /tmp/illumidesk.zip
-COPY ../src src
+COPY src src
 RUN pip install -e src/
 
 COPY setup-course-requirements.txt /tmp/requirements.txt
