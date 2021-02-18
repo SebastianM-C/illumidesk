@@ -40,10 +40,10 @@ class SetupUtils:
                 # launch a new one to be attached in the proxy
                 logger.info('Trying to scale jupyterhub with docker-compose')
                 subprocess.check_output(
-                    f'docker-compose --compatibility up -d --scale {self.jupyterhub_container_name}=2'.split(),
+                    f'docker-compose --compatibility up -d --scale {self.jupyterhub_container_name}=2 --no-recreate'.split(),
                     cwd=f'{self.illumidesk_dir}',
                 )
-                time.sleep(3)
+                time.sleep(5)
                 logger.debug(f'The container: {container.id} is stopping...')
                 container.stop()
                 time.sleep(1)
