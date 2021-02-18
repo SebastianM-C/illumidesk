@@ -28,7 +28,7 @@ class Course:
         grader_root: Grader's home path
         course_root: Course's root path
         token: JupyterHub API token used to authenticat requests with the Hub
-
+        
         uid: Grader's user id
         gid: Grader's group id
         is_new_setup: True indicates a new setup, False otherwise
@@ -40,10 +40,8 @@ class Course:
         self.domain = domain
 
         self.exchange_root = Path(os.environ.get('MNT_ROOT'), self.org, 'exchange')
-        self.exchange_root_out = Path(os.environ.get('MNT_ROOT_OUT'), self.org, 'exchange')
         self.grader_name = f'grader-{course_id}'
         self.grader_root = Path(os.environ.get('MNT_ROOT'), org, 'home', self.grader_name,)
-        self.grader_root_out = Path(os.environ.get('MNT_ROOT_OUT'), org, 'home', self.grader_name,)
         self.course_root = self.grader_root / course_id
         self.token = token_hex(32)
         self.client = docker.from_env()
@@ -68,7 +66,7 @@ class Course:
     async def setup(self):
         """
         Function to bootstrap new course setup
-
+        
         Returns:
             is_new_setup: boolean to indicate whether or not the this setup
             function executed the functions to set up a new course.
@@ -183,8 +181,8 @@ class Course:
                 f'NB_USER={self.grader_name}',
             ],
             volumes={
-                str(self.grader_root_out): {'bind': f'/home/{self.grader_name}'},
-                str(self.exchange_root_out): {'bind': '/srv/nbgrader/exchange'},
+                str(self.grader_root): {'bind': f'/home/{self.grader_name}'},
+                str(self.exchange_root): {'bind': '/srv/nbgrader/exchange'},
             },
             name=self.grader_name,
             user='root',
