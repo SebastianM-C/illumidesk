@@ -13,10 +13,10 @@ services:
       - setup-course
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./mnt/my-org/home:/home
+      - /deploy/mnt/my-org/home:/home
       - data:/data
-      - ./reverse-proxy:/etc/traefik
-      - ./keys:/secrets/keys
+      - /deploy/reverse-proxy:/etc/traefik
+      - /deploy/keys:/secrets/keys
     env_file:
       - env.jhub
     command: >
@@ -41,7 +41,7 @@ services:
       - "8080:8080"
       - "8099:8099"
     volumes:
-      - ./reverse-proxy/:/etc/traefik/
+      - /deploy/reverse-proxy/:/etc/traefik/
       - /var/run/docker.sock:/var/run/docker.sock
     restart: on-failure
 # {% if lti11_enabled is sameas false and lti13_enabled is sameas false%}
@@ -70,9 +70,9 @@ services:
       - env.setup_course
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - ./mnt:/mnt
+      - /deploy/mnt:/mnt
       - data:/srv/jupyterhub
-      - .:/deploy
+      - /deploy:/deploy
 # {% if postgres_labs_enabled is sameas true %}
   postgres-labs:
     image: postgres:11.6-alpine
