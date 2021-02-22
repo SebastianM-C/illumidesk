@@ -101,7 +101,10 @@ class LTIGradeSender(GradesBaseSender):
         shared_secret = os.environ.get('LTI_SHARED_SECRET')
         # get assignment info from control file
         grades_sender_file = LTIGradesSenderControlFile(self.gradebook_dir)
+        logger.debug(f'Using gradebook: {grades_sender_file}')
         assignment_info = grades_sender_file.get_assignment_by_name(self.assignment_name)
+        logger.debug(f'Assignment name: {self.assignment_name}')
+        logger.debug(f'Assignment info: {assignment_info}')
         if not assignment_info:
             logger.warning(
                 f'There is not info related to assignment: {self.assignment_name}. Check if the config file path is correct'
